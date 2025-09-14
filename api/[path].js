@@ -90,7 +90,7 @@ export default async function handler(req, res) {
       return res.status(200).json(rows);
     }
 
-    return res.status(404).json({ status: 404, message: `No handler for ${path}` });
+    return res.status(404).json({ status: 404, message: `No handler for pathname /${path}` });
   } catch (error) {
     console.error('Error:', error);
     return res.status(500).json({ status: 500, message: 'Internal Server Error', error });
