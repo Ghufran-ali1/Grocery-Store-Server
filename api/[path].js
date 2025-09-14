@@ -90,6 +90,13 @@ export default async function handler(req, res) {
       return res.status(200).json(rows);
     }
 
+    if (path === 'test') {
+      if (req.method !== 'GET') {
+        return res.status(405).json({ status: 405, message: 'Method not allowed' });
+      }
+      return res.status(200).json({status: 200, message: 'This server is running perfectly!'});
+    }
+
     return res.status(404).json({ status: 404, message: `No handler for pathname /${path}` });
   } catch (error) {
     console.error('Error:', error);
