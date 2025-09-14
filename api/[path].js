@@ -27,7 +27,7 @@ export default async function handler(req, res) {
       }
       const { username, password } = req.body;
       const result = await pool.query(
-        'INSERT INTO users (username, password) VALUES ($1, $2) RETURNING id, username',
+        'INSERT INTO ghufran_store_users (username, password) VALUES ($1, $2) RETURNING id, username',
         [username, password] // ⚠️ hash later
       );
       return res.status(201).json({ user: result.rows[0] });
@@ -39,7 +39,7 @@ export default async function handler(req, res) {
       }
       const { username, password } = req.body;
       const result = await pool.query(
-        'SELECT * FROM users WHERE username=$1 AND password=$2',
+        'SELECT * FROM ghufran_store_users WHERE username=$1 AND password=$2',
         [username, password]
       );
       if (result.rows.length === 0) {
@@ -55,7 +55,7 @@ export default async function handler(req, res) {
       }
       const { name, description, quantity } = req.body;
       const result = await pool.query(
-        'INSERT INTO items (name, description, quantity) VALUES ($1, $2, $3) RETURNING *',
+        'INSERT INTO ghufran_store_items (name, description, quantity) VALUES ($1, $2, $3) RETURNING *',
         [name, description, quantity]
       );
       return res.status(201).json(result.rows[0]);
@@ -67,7 +67,7 @@ export default async function handler(req, res) {
       }
       const { id, name, description, quantity } = req.body;
       const result = await pool.query(
-        'UPDATE items SET name=$1, description=$2, quantity=$3 WHERE id=$4 RETURNING *',
+        'UPDATE ghufran_store_items SET name=$1, description=$2, quantity=$3 WHERE id=$4 RETURNING *',
         [name, description, quantity, id]
       );
       return res.status(200).json(result.rows[0]);
@@ -78,7 +78,7 @@ export default async function handler(req, res) {
         return res.status(405).json({ status: 405, message: 'Method not allowed' });
       }
       const { id } = req.body;
-      await pool.query('DELETE FROM items WHERE id=$1', [id]);
+      await pool.query('DELETE FROM ghufran_store_items WHERE id=$1', [id]);
       return res.status(200).json({ message: 'Item deleted' });
     }
 
@@ -86,7 +86,7 @@ export default async function handler(req, res) {
       if (req.method !== 'GET') {
         return res.status(405).json({ status: 405, message: 'Method not allowed' });
       }
-      const { rows } = await pool.query('SELECT * FROM items');
+      const { rows } = await pool.query('SELECT * FROM ghufran_store_items');
       return res.status(200).json(rows);
     }
 
