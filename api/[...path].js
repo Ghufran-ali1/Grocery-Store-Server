@@ -18,9 +18,11 @@ export default async function handler(req, res) {
   }
 
   // ✅ use array to capture multiple segments: e.g. ["stock"] or ["stock","STK123"]
-  const pathParts = req.query.path || [];
-  const mainPath = pathParts[0];
-  const subPath = pathParts[1] || null;
+  const pathParts = Array.isArray(req.query.path)
+    ? req.query.path
+    : (req.query.path ? [req.query.path] : []);
+  const mainPath = pathParts[0] || null;
+  const subPath  = pathParts[1] || null;
 
   try {
     // --- AUTH ---
@@ -115,7 +117,7 @@ export default async function handler(req, res) {
       return res.status(200).json({ code: 200, status: 'Running!', message: 'The server at www.ghufran...server.app is running perfectly!' });
     }
 
-    return res.status(404).json({ code: 404, status: 'Path Not Found!', message: `No handler for this pathname /${mainPath} was found! Check your API and try again.` });
+    return res.status(404).json({ code: 404, status: 'Path Not Found!', message: `No handler for this pathname /api/${mainPath} was found! Check your API and try again.` });
   } catch (error) {
     console.error('Error:', error);
     return res.status(500).json({ code: 500, status: '', message: 'Internal Server Error', error });
