@@ -90,6 +90,15 @@ export default async function handler(req, res) {
       return res.status(200).json(rows);
     }
 
+    // ---------- Admins ----------
+    if (main === 'admins') {
+      if (req.method !== 'GET') {
+        return res.status(405).json({ status: 405, message: 'Method not allowed. Use GET.' });
+      }
+      const { rows } = await pool.query('SELECT * FROM ghufran_store_users');
+      return res.status(200).json(rows);
+    }
+
     // ---------- TEST ----------
     if (main === 'test') {
       if (req.method !== 'GET') {
