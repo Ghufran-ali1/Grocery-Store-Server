@@ -26,7 +26,7 @@ export default async function handler(req, res) {
     // --- AUTH ---
     if (mainPath === 'signup') {
       if (req.method !== 'POST') {
-        return res.status(405).json({ status: 405, message: 'Method not allowed' });
+        return res.status(405).json({ code: 405, status: 'Method not Allowed!', message: 'This Method is not allowed!' });
       }
       const { username, password } = req.body;
       const result = await pool.query(
@@ -38,7 +38,7 @@ export default async function handler(req, res) {
 
     if (mainPath === 'login') {
       if (req.method !== 'POST') {
-        return res.status(405).json({ status: 405, message: 'Method not allowed' });
+        return res.status(405).json({ code: 405, status: 'Method not Allowed!', message: 'This Method is not allowed!' });
       }
       const { username, password } = req.body;
       const result = await pool.query(
@@ -46,7 +46,7 @@ export default async function handler(req, res) {
         [username, password]
       );
       if (result.rows.length === 0) {
-        return res.status(401).json({ status: 401, message: 'Invalid credentials' });
+        return res.status(401).json({ code: 401, status: '', message: 'Invalid credentials' });
       }
       return res.status(200).json({ user: result.rows[0] });
     }
@@ -54,7 +54,7 @@ export default async function handler(req, res) {
     // --- ITEMS ---
     if (mainPath === 'create-item') {
       if (req.method !== 'POST') {
-        return res.status(405).json({ status: 405, message: 'Method not allowed' });
+        return res.status(405).json({ code: 405, status: 'Method not Allowed!', message: 'This Method is not allowed!' });
       }
       const { name, description, quantity } = req.body;
       const result = await pool.query(
@@ -66,7 +66,7 @@ export default async function handler(req, res) {
 
     if (mainPath === 'update-item') {
       if (req.method !== 'PUT') {
-        return res.status(405).json({ status: 405, message: 'Method not allowed' });
+        return res.status(405).json({ code: 405, status: 'Method not Allowed!', message: 'This Method is not allowed!' });
       }
       const { id, name, description, quantity } = req.body;
       const result = await pool.query(
@@ -78,7 +78,7 @@ export default async function handler(req, res) {
 
     if (mainPath === 'delete-item') {
       if (req.method !== 'DELETE') {
-        return res.status(405).json({ status: 405, message: 'Method not allowed' });
+        return res.status(405).json({ code: 405, status: 'Method not Allowed!', message: 'This Method is not allowed!' });
       }
       const { id } = req.body;
       await pool.query('DELETE FROM ghufran_store_items WHERE id=$1', [id]);
@@ -88,7 +88,7 @@ export default async function handler(req, res) {
     // --- FETCH ITEMS / STOCK ---
     if (mainPath === 'items' || mainPath === 'stock') {
       if (req.method !== 'GET') {
-        return res.status(405).json({ status: 405, message: 'Method not allowed' });
+        return res.status(405).json({ code: 405, status: 'Method not Allowed!', message: 'This Method is not allowed!' });
       }
 
       if (subPath) {
@@ -98,7 +98,7 @@ export default async function handler(req, res) {
           [subPath]
         );
         if (rows.length === 0) {
-          return res.status(404).json({ status: 404, message: 'Item not found' });
+          return res.status(404).json({ code: 404, status: '', message: 'Item not found' });
         }
         return res.status(200).json(rows[0]);
       } else {
@@ -110,14 +110,14 @@ export default async function handler(req, res) {
 
     if (mainPath === 'test') {
       if (req.method !== 'GET') {
-        return res.status(405).json({ status: 405, message: 'Method not allowed' });
+        return res.status(405).json({ code: 405, status: 'Method not Allowed!', message: 'This Method is not allowed!' });
       }
-      return res.status(200).json({ status: 200, message: 'The server is running perfectly!' });
+      return res.status(200).json({ code: 200, status: 'Running!', message: 'The server at www.ghufran...server.app is running perfectly!' });
     }
 
-    return res.status(404).json({ status: 404, message: `No handler for pathname /${mainPath}` });
+    return res.status(404).json({ code: 404, status: 'Path Not Found!', message: `No handler for this pathname /${mainPath} was found! Check your API and try again.` });
   } catch (error) {
     console.error('Error:', error);
-    return res.status(500).json({ status: 500, message: 'Internal Server Error', error });
+    return res.status(500).json({ code: 500, status: '', message: 'Internal Server Error', error });
   }
 }
