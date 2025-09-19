@@ -17,7 +17,7 @@ export default async function handler(req, res) {
     return res.status(200).end();
   }
 
-  const { main, sub } = req.query; // e.g. /api/stock/STK123  ->  main='stock', sub='STK123'
+  const { main, sub } = req.query;
 
   try {
     // --- Handle items/stock subpath ---
