@@ -18,7 +18,7 @@ export default async function handler(req, res) {
   }
 
   // ✅ use array to capture multiple segments: e.g. ["stock"] or ["stock","STK123"]
-  const pathParts = req.query.path;
+  const pathParts = req.query.path || [];
   const mainPath = pathParts[0];
   const subPath = pathParts[1] || null;
 
