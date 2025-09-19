@@ -1,4 +1,4 @@
-// api/[path].js
+// api/[...path].js
 const pool = require('../db');
 const allowedOrigins = require('../Origin');
 
@@ -17,11 +17,14 @@ export default async function handler(req, res) {
     return res.status(200).end();
   }
 
-  const { path } = req.query;
+  // ✅ use array to capture multiple segments: e.g. ["stock"] or ["stock","STK123"]
+  const pathParts = req.query.path;
+  const mainPath = pathParts[0];
+  const subPath = pathParts[1] || null;
 
   try {
     // --- AUTH ---
-    if (path === 'signup') {
+    if (mainPath === 'signup') {
       if (req.method !== 'POST') {
         return res.status(405).json({ status: 405, message: 'Method not allowed' });
       }
@@ -33,7 +36,7 @@ export default async function handler(req, res) {
       return res.status(201).json({ user: result.rows[0] });
     }
 
-    if (path === 'login') {
+    if (mainPath === 'login') {
       if (req.method !== 'POST') {
         return res.status(405).json({ status: 405, message: 'Method not allowed' });
       }
@@ -49,7 +52,7 @@ export default async function handler(req, res) {
     }
 
     // --- ITEMS ---
-    if (path === 'create-item') {
+    if (mainPath === 'create-item') {
       if (req.method !== 'POST') {
         return res.status(405).json({ status: 405, message: 'Method not allowed' });
       }
@@ -61,7 +64,7 @@ export default async function handler(req, res) {
       return res.status(201).json(result.rows[0]);
     }
 
-    if (path === 'update-item') {
+    if (mainPath === 'update-item') {
       if (req.method !== 'PUT') {
         return res.status(405).json({ status: 405, message: 'Method not allowed' });
       }
@@ -73,7 +76,7 @@ export default async function handler(req, res) {
       return res.status(200).json(result.rows[0]);
     }
 
-    if (path === 'delete-item') {
+    if (mainPath === 'delete-item') {
       if (req.method !== 'DELETE') {
         return res.status(405).json({ status: 405, message: 'Method not allowed' });
       }
@@ -82,22 +85,37 @@ export default async function handler(req, res) {
       return res.status(200).json({ message: 'Item deleted' });
     }
 
-    if (path === 'items') {
+    // --- FETCH ITEMS / STOCK ---
+    if (mainPath === 'items' || mainPath === 'stock') {
       if (req.method !== 'GET') {
         return res.status(405).json({ status: 405, message: 'Method not allowed' });
       }
-      const { rows } = await pool.query('SELECT * FROM ghufran_store_items');
-      return res.status(200).json(rows);
+
+      if (subPath) {
+        // GET /api/stock/<store_no> → specific item
+        const { rows } = await pool.query(
+          'SELECT * FROM ghufran_store_items WHERE store_no = $1',
+          [subPath]
+        );
+        if (rows.length === 0) {
+          return res.status(404).json({ status: 404, message: 'Item not found' });
+        }
+        return res.status(200).json(rows[0]);
+      } else {
+        // GET /api/items or /api/stock → all items
+        const { rows } = await pool.query('SELECT * FROM ghufran_store_items');
+        return res.status(200).json(rows);
+      }
     }
 
-    if (path === 'test') {
+    if (mainPath === 'test') {
       if (req.method !== 'GET') {
         return res.status(405).json({ status: 405, message: 'Method not allowed' });
       }
-      return res.status(200).json({status: 200, message: 'This server is running perfectly!'});
+      return res.status(200).json({ status: 200, message: 'The server is running perfectly!' });
     }
 
-    return res.status(404).json({ status: 404, message: `No handler for pathname /${path}` });
+    return res.status(404).json({ status: 404, message: `No handler for pathname /${mainPath}` });
   } catch (error) {
     console.error('Error:', error);
     return res.status(500).json({ status: 500, message: 'Internal Server Error', error });
