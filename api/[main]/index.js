@@ -135,17 +135,40 @@ if (main === 'admin-details') {
 }
 
     // ---------- ITEMS CRUD ----------
-    if (main === 'create-item') {
-      if (req.method !== 'POST') {
-        return res.status(405).json({ status: 405, message: 'Method not allowed. Use POST.' });
-      }
-      const { name, category, description, quantity, gallery, store_no } = req.body;
+if (main === 'create-items') {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ status: 405, message: 'Method not allowed. Use POST.' });
+  }
+
+  const items = req.body; // expect an array of objects
+
+  if (!Array.isArray(items)) {
+    return res.status(400).json({ status: 400, message: "Expected an array of items" });
+  }
+
+  try {
+    const insertedItems = [];
+
+    for (const item of items) {
+      const { name, category, description, quantity, gallery, store_no } = item;
+
       const result = await pool.query(
-        'INSERT INTO ghufran_store_items (name, category, description, quantity, gallery, store_no) VALUES ($1, $2, $3) RETURNING *',
-        [name, description, quantity]
+        `INSERT INTO ghufran_store_items 
+          (name, category, description, quantity, gallery, store_no) 
+         VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
+        [name, category, description, quantity, gallery, store_no]
       );
-      return res.status(201).json(result.rows[0]);
+
+      insertedItems.push(result.rows[0]);
     }
+
+    return res.status(201).json(insertedItems); // return all inserted items
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ status: 500, message: "Database error" });
+  }
+}
+
 
     if (main === 'update-items') {
       if (req.method !== 'PUT') {
