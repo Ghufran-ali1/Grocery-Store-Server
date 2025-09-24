@@ -156,7 +156,7 @@ if (main === 'create-items') {
         `INSERT INTO ghufran_store_items 
           (name, category, description, quantity, gallery, store_no) 
          VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
-        [name, category, description, quantity, gallery, store_no]
+        [name, category, description, quantity, JSON.stringify(gallery), store_no]
       );
 
       insertedItems.push(result.rows[0]);
