@@ -139,9 +139,9 @@ if (main === 'admin-details') {
       if (req.method !== 'POST') {
         return res.status(405).json({ status: 405, message: 'Method not allowed. Use POST.' });
       }
-      const { name, description, quantity } = req.body;
+      const { name, category, description, quantity, gallery, store_no } = req.body;
       const result = await pool.query(
-        'INSERT INTO ghufran_store_items (name, description, quantity) VALUES ($1, $2, $3) RETURNING *',
+        'INSERT INTO ghufran_store_items (name, category, description, quantity, gallery, store_no) VALUES ($1, $2, $3) RETURNING *',
         [name, description, quantity]
       );
       return res.status(201).json(result.rows[0]);
