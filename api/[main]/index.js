@@ -147,7 +147,7 @@ if (main === 'admin-details') {
       return res.status(201).json(result.rows[0]);
     }
 
-    if (main === 'update-item') {
+    if (main === 'update-items') {
       if (req.method !== 'PUT') {
         return res.status(405).json({ status: 405, message: 'Method not allowed. Use PUT.' });
       }
