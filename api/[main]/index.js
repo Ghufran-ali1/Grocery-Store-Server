@@ -88,6 +88,21 @@ if (main === 'admin-details') {
       .json({ status: 405, message: 'Method not allowed. Use GET.' });
   }
 
+  
+  // Token verification function (NOT middleware anymore)
+  const verifyToken = (token) => {
+    try {
+      return jwt.verify(token, secretKey); // Verify and return decoded token
+    } catch (err) {
+      if (err.name === 'TokenExpiredError') {
+        throw new Error('Token has expired');
+      } else if (err.name === 'JsonWebTokenError') {
+        throw new Error('Invalid token');
+      }
+      throw new Error('Token verification failed');
+    }
+  };
+
   try {
     // ✅ Expect: Authorization: Bearer <token>
     const authHeader = req.headers.authorization;
@@ -99,19 +114,16 @@ if (main === 'admin-details') {
 
     const token = authHeader.split(' ')[1];
 
+    console.log('Admin token: ', token)
+
     // ✅ Verify token
-    let payload;
-    try {
-      payload = jwt.verify(token, secretKey);
-    } catch (err) {
-      return res
-        .status(401)
-        .json({ status: 401, message: 'Invalid or expired token.' });
-    }
+    const payload = verifyToken(token);
+
+    console.log('payload; ', payload)
 
     // ✅ Fetch admin details
     const result = await pool.query(
-      'SELECT id, username, email, role FROM ghufran_store_users WHERE username=$1 LIMIT 1',
+      'SELECT * FROM ghufran_store_users WHERE username=$1 LIMIT 1',
       [payload.username]
     );
 
