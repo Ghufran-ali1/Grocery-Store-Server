@@ -34,7 +34,7 @@ export default async function handler(req, res) {
   const { username, email, password, role } = req.body;
   // ⚠️ Hash passwords in production!
   const result = await pool.query(
-    'INSERT INTO ghufran_store_users (username, email, password, role) VALUES ($1, $2) RETURNING id, username',
+    'INSERT INTO ghufran_store_users (username, email, password, role) VALUES ($1, $2, $3, $4) RETURNING id, username',
     [username, email, password, role]
   );
 
