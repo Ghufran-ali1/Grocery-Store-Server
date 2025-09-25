@@ -104,15 +104,12 @@ if (main === 'admin-details') {
   };
 
   try {
-    // ✅ Expect: Authorization: Bearer <token>
-    const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return res
-        .status(401)
-        .json({ status: 401, message: 'Authorization header missing or malformed.' });
+    const tokenHeader = req.headers.authorization;
+    if (!tokenHeader) {
+      return res.status(401).json({ message: 'Authorization header is missing' });
     }
 
-    const token = authHeader.split(' ')[1];
+    const token = tokenHeader.split(' ')[1];
 
     console.log('Admin token: ', token)
 
