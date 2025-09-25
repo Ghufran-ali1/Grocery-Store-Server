@@ -6,7 +6,6 @@ const secretKey = "6528f96b6bbc75e49d08ebc095da13119cc4da26e55b299558f718f0c0277
 
 export default async function handler(req, res) {
   const origin = req.headers.origin;
-
   // ----- CORS -----
   if (allowedOrigins.includes(origin)) {
     res.setHeader('Access-Control-Allow-Origin', origin);
