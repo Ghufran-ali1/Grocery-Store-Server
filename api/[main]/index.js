@@ -75,8 +75,8 @@ if (main === 'login') {
 
   return res.status(200).json({
     status: 200,
-    message: 'Login successful.',
-    user: { id: result.rows[0].id, username: result.rows[0].username },
+    message: 'Admin login was successful.',
+    user: rows[0],
     token,
   });
 }
