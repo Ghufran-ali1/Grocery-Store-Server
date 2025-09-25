@@ -89,19 +89,18 @@ if (main === 'admin-details') {
   }
 
   
-  // Token verification function (NOT middleware anymore)
-  const verifyToken = (token) => {
-    try {
-      return jwt.verify(token, secretKey); // Verify and return decoded token
-    } catch (err) {
-      if (err.name === 'TokenExpiredError') {
-        throw new Error('Token has expired');
-      } else if (err.name === 'JsonWebTokenError') {
-        throw new Error('Invalid token');
-      }
-      throw new Error('Token verification failed');
+const verifyToken = (token) => {
+  try {
+    return jwt.verify(token, secretKey);
+  } catch (err) {
+    if (err.name === 'TokenExpiredError') {
+      throw { status: 401, message: 'Token has expired' };
+    } else if (err.name === 'JsonWebTokenError') {
+      throw { status: 401, message: 'Invalid token' };
     }
-  };
+    throw { status: 500, message: 'Token verification failed' };
+  }
+};
 
   try {
     const tokenHeader = req.headers.authorization;
