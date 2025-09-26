@@ -143,12 +143,14 @@ if (main === 'update-item') {
   if (req.method !== 'PUT')
     return res.status(405).json({ status: 405, message: 'Method not allowed. Use PUT.' });
 
-  const { id, name, description, quantity } = req.body;
+  const { id, name, category, description, quantity } = req.body;
+
+  console.log('received item: ', id, name, category, description, quantity)
 
   try {
     const result = await pool.query(
-      'UPDATE ghufran_store_items SET name=$1, description=$2, quantity=$3 WHERE id=$4 RETURNING *',
-      [name, description, quantity, id]
+      'UPDATE ghufran_store_items SET name=$1, description=$2, quantity=$3, category=$3 WHERE id=$4 RETURNING *',
+      [name,  description, quantity, id, category]
     );
 
     if (result.rowCount === 0) {
