@@ -7,7 +7,7 @@ if (!global._pgPool) {
   global._pgPool = new Pool({
     connectionString,
     ssl: { rejectUnauthorized: false },
-    max: 2, // very low for serverless
+    max: 10,
     idleTimeoutMillis: 30000,
     connectionTimeoutMillis: 2000,
   });
