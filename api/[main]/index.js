@@ -157,7 +157,7 @@ export default async function handler(req, res) {
         return res.status(405).json({ status: 405, message: 'Method not allowed. Use DELETE.' });
 
       const { id } = req.body;
-      await pool.query('DELETE FROM ghufran_store_items WHERE id=$1', [id]);
+      await pool.query('DELETE FROM ghufran_store_items WHERE store_no=$1', [id]);
       return res.status(200).json({ message: 'Item deleted.' });
     }
 
