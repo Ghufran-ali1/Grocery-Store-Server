@@ -139,17 +139,28 @@ export default async function handler(req, res) {
     }
 
     /* ---------- UPDATE ITEM ---------- */
-    if (main === 'update-item') {
-      if (req.method !== 'PUT')
-        return res.status(405).json({ status: 405, message: 'Method not allowed. Use PUT.' });
+if (main === 'update-item') {
+  if (req.method !== 'PUT')
+    return res.status(405).json({ status: 405, message: 'Method not allowed. Use PUT.' });
 
-      const { id, name, description, quantity } = req.body;
-      const result = await pool.query(
-        'UPDATE ghufran_store_items SET name=$1, description=$2, quantity=$3 WHERE id=$4 RETURNING *',
-        [name, description, quantity, id]
-      );
-      return res.status(200).json(result);
+  const { id, name, description, quantity } = req.body;
+
+  try {
+    const result = await pool.query(
+      'UPDATE ghufran_store_items SET name=$1, description=$2, quantity=$3 WHERE id=$4 RETURNING *',
+      [name, description, quantity, id]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ status: 404, message: 'Item not found' });
     }
+
+    return res.status(200).json(result.rows[0]);
+  } catch (err) {
+    console.error('DB update error:', err);
+    return res.status(500).json({ status: 500, message: 'Database error' });
+  }
+}
 
     /* ---------- DELETE ITEM ---------- */
     if (main === 'delete-item') {
