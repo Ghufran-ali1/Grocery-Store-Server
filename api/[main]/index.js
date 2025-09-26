@@ -150,7 +150,7 @@ if (main === 'update-item') {
   try {
     const result = await pool.query(
       'UPDATE ghufran_store_items SET name=$1, description=$2, quantity=$3, category=$3 WHERE id=$4 RETURNING *',
-      [name,  description, quantity, id, category]
+      [name,  description, parseInt(quantity), id, category]
     );
 
     if (result.rowCount === 0) {
