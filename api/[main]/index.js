@@ -148,7 +148,7 @@ export default async function handler(req, res) {
         'UPDATE ghufran_store_items SET name=$1, description=$2, quantity=$3 WHERE id=$4 RETURNING *',
         [name, description, quantity, id]
       );
-      return res.status(200).json(result.rows[0]);
+      return res.status(200).json(result);
     }
 
     /* ---------- DELETE ITEM ---------- */
