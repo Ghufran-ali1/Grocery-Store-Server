@@ -139,7 +139,7 @@ export default async function handler(req, res) {
     }
 
     /* ---------- UPDATE ITEM ---------- */
-    if (main === 'update-items') {
+    if (main === 'update-item') {
       if (req.method !== 'PUT')
         return res.status(405).json({ status: 405, message: 'Method not allowed. Use PUT.' });
 
@@ -161,8 +161,7 @@ export default async function handler(req, res) {
       return res.status(200).json({ message: 'Item deleted.' });
     }
 
-    /* ---------- LIST ITEMS / STOCK ---------- */
-    if (main === 'items' || main === 'stock') {
+    if (main === 'items') {
       if (req.method !== 'GET')
         return res.status(405).json({ status: 405, message: 'Method not allowed. Use GET.' });
       const { rows } = await pool.query('SELECT * FROM ghufran_store_items');

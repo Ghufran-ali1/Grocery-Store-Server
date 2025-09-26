@@ -20,8 +20,7 @@ export default async function handler(req, res) {
   const { main, sub } = req.query;
 
   try {
-    // --- Handle items/stock subpath ---
-    if (main === 'items' || main === 'stock') {
+    if (main === 'items') {
       if (req.method !== 'GET') {
         return res
           .status(405)
