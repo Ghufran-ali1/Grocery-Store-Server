@@ -24,10 +24,10 @@ export default async function handler(req, res) {
       if (req.method !== 'POST')
         return res.status(405).json({ status: 405, message: 'Method not allowed. Use POST.' });
 
-      const { username, email, password, role } = req.body;
+      const { username, email, password, role, created_by } = req.body;
       const result = await pool.query(
-        'INSERT INTO ghufran_store_users (username, email, password, role) VALUES ($1,$2,$3,$4) RETURNING id, username',
-        [username, email, password, role]
+        'INSERT INTO ghufran_store_users (username, email, password, role, created_by) VALUES ($1,$2,$3,$4,$5) RETURNING id, username',
+        [username, email, password, role, created_by]
       );
 
       return res.status(201).json({
