@@ -1,6 +1,6 @@
 // allowedOrigins.js
 const allowedOrigins = [
-  // 'https://carshare-kenya.vercel.app',
+  'https://ghufran-grocery-store.vercel.app',
   'http://localhost:5173'
 ];
 
