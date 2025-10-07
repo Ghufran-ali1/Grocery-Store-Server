@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 // const secretKey = process.env.SECRET_KEY;
 const secretKey =
   "6528f96b6bbc75e49d08ebc095da13119cc4da26e55b299558f718f0c027723e27214883";
-import { v4 as uuidv4 } from "uuid";
+const { v4: uuidv4 } = require("uuid");
 
 
 const rsv_no = () => {
