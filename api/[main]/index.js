@@ -6,7 +6,6 @@ const secretKey =
   "6528f96b6bbc75e49d08ebc095da13119cc4da26e55b299558f718f0c027723e27214883";
 const { v4: uuidv4 } = require("uuid");
 
-
 const rsv_no = () => {
   const id = uuidv4();
   const hex = id.replace(/-/g, "");
@@ -15,7 +14,6 @@ const rsv_no = () => {
 
   return `RSV${value.toString().slice(0, 12)}`;
 };
-
 
 export default async function handler(req, res) {
   const origin = req.headers.origin;
@@ -206,7 +204,7 @@ export default async function handler(req, res) {
 
       try {
         const result = await pool.query(
-          "UPDATE ghufran_store_items SET name=$1, description=$2, quantity=$3, category=$4, gallery=$5, views=$6 WHERE id=$7 RETURNING *",
+          "UPDATE ghufran_store_items SET name=$1, description=$2, quantity=$3, category=$4, gallery=$5, views=$6, created_at=NOW() WHERE id=$7 RETURNING *",
           [
             name,
             description,
@@ -245,11 +243,24 @@ export default async function handler(req, res) {
           `INSERT INTO ghufran_store_reservations
           (reserved_by, email, date, quantity, rsv_no, store_no, name, category) VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *`,
           [
-            reserved_by, email, date, quantity, rsv_no(), store_no, name, category
+            reserved_by,
+            email,
+            date,
+            quantity,
+            rsv_no(),
+            store_no,
+            name,
+            category,
           ]
         );
 
-        return res.status(200).json({data: result.rows[0], status: 'success', message: 'new reservation made successfully.'});
+        return res
+          .status(200)
+          .json({
+            data: result.rows[0],
+            status: "success",
+            message: "new reservation made successfully.",
+          });
       } catch (err) {
         console.error("DB update error:", err);
         return res.status(500).json({ status: 500, message: "Database error" });
@@ -284,7 +295,9 @@ export default async function handler(req, res) {
         return res
           .status(405)
           .json({ status: 405, message: "Method not allowed. Use GET." });
-      const { rows } = await pool.query("SELECT * FROM ghufran_store_reservations");
+      const { rows } = await pool.query(
+        "SELECT * FROM ghufran_store_reservations"
+      );
       return res.status(200).json(rows);
     }
 
