@@ -281,6 +281,15 @@ export default async function handler(req, res) {
       return res.status(200).json(rows);
     }
 
+    if (main === "reservations") {
+      if (req.method !== "GET")
+        return res
+          .status(405)
+          .json({ status: 405, message: "Method not allowed. Use GET." });
+      const { rows } = await pool.query("SELECT * FROM ghufran_store_reservations");
+      return res.status(200).json(rows);
+    }
+
     /* ---------- ADMINS ---------- */
     if (main === "admins") {
       if (req.method !== "GET")
