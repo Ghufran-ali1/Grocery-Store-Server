@@ -245,7 +245,7 @@ export default async function handler(req, res) {
           `INSERT INTO ghufran_store_reservations
           (reserved_by, email, date, quantity, rsv_no, store_no, name, category) VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *`,
           [
-            reserved_by, email, date, quantity, rsv_no, store_no, name, category
+            reserved_by, email, date, quantity, rsv_no(), store_no, name, category
           ]
         );
 
