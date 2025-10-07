@@ -240,8 +240,6 @@ export default async function handler(req, res) {
       const { reserved_by, email, date, quantity, store_no, name, category } =
         req.body;
 
-      console.log("received item: ", id, quantity);
-
       try {
         const result = await pool.query(
           `INSERT INTO ghufran_store_reservations
