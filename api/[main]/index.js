@@ -145,7 +145,7 @@ if (main === 'update-item') {
 
   const { id, name, category, description, quantity, gallery, views } = req.body;
 
-  console.log('received item: ', id, name, category, description, quantity, gallery)
+  console.log('received item: ', id, name, category, description, quantity, gallery, views)
 
   try {
     const result = await pool.query(
