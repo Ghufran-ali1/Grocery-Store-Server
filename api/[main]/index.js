@@ -43,9 +43,10 @@ module.exports = async function handler(req, res) {
           .json({ status: 405, message: "Method not allowed. Use POST." });
 
       const { username, email, password, role, created_by } = req.body;
+      const avatar = `https://robohash.org/${username}?set=set5`;
       const result = await pool.query(
-        "INSERT INTO ghufran_store_users (username, email, password, role, created_by) VALUES ($1,$2,$3,$4,$5) RETURNING id, username",
-        [username, email, password, role, created_by]
+        "INSERT INTO ghufran_store_users (username, email, password, role, created_by, avatar) VALUES ($1,$2,$3,$4,$5,$6) RETURNING id, username",
+        [username, email, password, role, created_by, avatar]
       );
 
       return res.status(201).json({
