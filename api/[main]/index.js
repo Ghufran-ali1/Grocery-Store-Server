@@ -16,11 +16,13 @@ const rsv_no = () => {
 };
 
 module.exports = async function handler(req, res) {
-  const origin = req.headers.origin;
-  // ----- CORS -----
-  if (allowedOrigins.includes(origin)) {
-    res.setHeader("Access-Control-Allow-Origin", origin);
-  }
+  // const origin = req.headers.origin;
+  // // ----- CORS -----
+  // if (allowedOrigins.includes(origin)) {
+  //   res.setHeader("Access-Control-Allow-Origin", origin);
+  // }
+  res.setHeader("Access-Control-Allow-Origin", "*");
+
   res.setHeader(
     "Access-Control-Allow-Methods",
     "GET, POST, PUT, DELETE, OPTIONS"
@@ -254,13 +256,11 @@ module.exports = async function handler(req, res) {
           ]
         );
 
-        return res
-          .status(200)
-          .json({
-            data: result.rows[0],
-            status: "success",
-            message: "new reservation made successfully.",
-          });
+        return res.status(200).json({
+          data: result.rows[0],
+          status: "success",
+          message: "new reservation made successfully.",
+        });
       } catch (err) {
         console.error("DB update error:", err);
         return res.status(500).json({ status: 500, message: "Database error" });
@@ -335,4 +335,4 @@ module.exports = async function handler(req, res) {
       error: error.message,
     });
   }
-}
+};
