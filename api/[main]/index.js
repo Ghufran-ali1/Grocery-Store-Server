@@ -15,7 +15,7 @@ const rsv_no = () => {
   return `RSV${value.toString().slice(0, 12)}`;
 };
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   const origin = req.headers.origin;
   // ----- CORS -----
   if (allowedOrigins.includes(origin)) {
