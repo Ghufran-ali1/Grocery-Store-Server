@@ -87,6 +87,44 @@ module.exports = async function handler(req, res) {
         token,
       });
     }
+    /* ---------- UPDATE ADMIN ---------- */
+    if (main === "update-admin") {
+      if (req.method !== "PUT")
+        return res
+          .status(405)
+          .json({ status: 405, message: "Method not allowed. Use PUT." });
+
+      const { username, email, password, role, avatar, id } = req.body;
+
+      try {
+        const result = await pool.query(
+          "UPDATE ghufran_store_users SET username=$1, email=$2, password=$3, role=$4, avatar=$5 WHERE id=$6 RETURNING *",
+          [username, email, password, role, avatar, id]
+        );
+
+        if (result.rowCount === 0) {
+          return res
+            .status(404)
+            .json({ status: 404, message: "Admin not found" });
+        }
+
+        return res.status(200).json(result.rows[0]);
+      } catch (err) {
+        console.error("DB update error:", err);
+        return res.status(500).json({ status: 500, message: "Database error" });
+      }
+    }
+    /* ---------- DELETE ADMIN ---------- */
+    if (main === "delete-admin") {
+      if (req.method !== "DELETE")
+        return res
+          .status(405)
+          .json({ status: 405, message: "Method not allowed. Use DELETE." });
+
+      const { id } = req.body;
+      await pool.query("DELETE FROM ghufran_store_users WHERE id=$1", [id]);
+      return res.status(200).json({ message: "Admin deleted." });
+    }
 
     /* ---------- ADMIN DETAILS ---------- */
     if (main === "admin-details") {
