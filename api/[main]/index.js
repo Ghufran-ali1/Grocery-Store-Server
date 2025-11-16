@@ -361,6 +361,36 @@ module.exports = async function handler(req, res) {
         .json({ status: 200, message: "The server is running perfectly!" });
     }
 
+    /* ---------- TRACKER APP UPDATE USER ACTIVITIES ---------- */
+    if (main === "update-user-activities") {
+      if (req.method !== "PUT")
+        return res
+          .status(405)
+          .json({ status: 405, message: "Method not allowed. Use PUT." });
+
+      const { id, activities } = req.body;
+
+      try {
+        const result = await pool.query(
+          `
+      INSERT INTO oduk_tracker_app_db (id, acivities, last_updated)
+      VALUES ($1, $2, NOW())
+      ON CONFLICT (id)
+      DO UPDATE SET 
+        acivities = EXCLUDED.acivities,
+        last_updated = NOW()
+      RETURNING *;
+      `,
+          [id, JSON.stringify(activities)]
+        );
+
+        return res.status(200).json(result.rows[0]);
+      } catch (err) {
+        console.error("DB upsert error:", err);
+        return res.status(500).json({ status: 500, message: "Database error" });
+      }
+    }
+
     // ---------- FALLBACK ----------
     return res.status(404).json({
       status: 404,
